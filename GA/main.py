@@ -2,7 +2,7 @@ import sys
 from time import time
 import trainer
 
-generations = 150#150
+generations = 1000#150
 crossover_rate = 0.05
 heuristic_mutate_rate = 0.05
 inversion_mutate_rate = 0.05
@@ -13,7 +13,7 @@ route_merge_rate = 0.05
 if __name__ == '__main__':
     t1 = time()
     #assert len(sys.argv) >= 2, 'specify file, e.g., ../data/***.txt'
-    trainer.load_problem('./data/n50d3c3D2s1.txt')
+    trainer.load_problem('./data/n100d3c3D2s1.txt')
     trainer.initialize()
 
     best_solution = trainer.train(generations, crossover_rate, heuristic_mutate_rate, inversion_mutate_rate,

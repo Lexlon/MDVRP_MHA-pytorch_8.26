@@ -87,9 +87,9 @@ def test_parser():
 	parser.add_argument('-c', '--n_car', metavar = 'C', type = int, default = 10, help = 'number of available vehicles')
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 2, help = 'number of depot nodes')
 	parser.add_argument('-s', '--seed', metavar = 'S', type = int, default = 123, help = 'random seed number for inference, reproducibility')
-	parser.add_argument('-p', '--path', metavar = 'P', type = str, default = 'Weights/VRP50_epoch18.pt', #required = True,
+	parser.add_argument('-p', '--path', metavar = 'P', type = str, default = 'Weights/VRP100_epoch15.pt', #required = True,
 						help = 'Weights/VRP***_epoch***.pt, pt file required')
-	parser.add_argument('-t', '--txt', metavar = 'T', type = str, default = 'data/n50d3c3D2s1.json', help = 'if you wanna test out on text file, example: data/***.json')
+	parser.add_argument('-t', '--txt', metavar = 'T', type = str, default = 'data/n100d3c3D2s1.json', help = 'if you wanna test out on text file, example: data/***.json')
 	parser.add_argument('-wc', '--write_csv', metavar = 'WC', type = str, help = 'export csv example: Csv/***_mha.csv')
 	parser.add_argument('-wc2', '--write_csv_2opt', metavar = 'WC2', type = str, help = 'export csv example: Csv/***_mha2opt.csv')
 	args = parser.parse_args()

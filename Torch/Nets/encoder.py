@@ -8,7 +8,7 @@ import math
 # sys.path.append('../')
 # from dataset import generate_data
 
-from .encoder_layers import MultiHeadAttention
+from encoder_layers import MultiHeadAttention
 
 class Normalization(nn.Module):
 

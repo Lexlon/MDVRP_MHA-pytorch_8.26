@@ -7,8 +7,8 @@ import torch.nn as nn
 # sys.path.append('../')
 # from dataset import generate_data
 
-from .decoder_layers import MultiHeadAttention, DotProductAttention
-from .decoder_utils import TopKSampler, CategoricalSampler, Env
+from decoder_layers import MultiHeadAttention, DotProductAttention
+from decoder_utils import TopKSampler, CategoricalSampler, Env
 
 
 class DecoderCell(nn.Module):
@@ -57,7 +57,7 @@ class DecoderCell(nn.Module):
 		self.env = Env(x, node_embeddings)
 		self.compute_static(node_embeddings, graph_embedding)
 		mask, step_context = self.env._get_step_t1()
-		
+		print('mask',mask)
 		selecter = {'greedy': TopKSampler(), 'sampling': CategoricalSampler()}.get(decode_type, None)
 		log_ps, tours, cars, idxs = [[] for _ in range(4)]
 		for i in range(self.env.n_node * 10):
@@ -67,6 +67,9 @@ class DecoderCell(nn.Module):
 			next_car = idx // self.env.n_node
 			next_node = idx % self.env.n_node
 			mask, step_context = self.env._get_step(next_node, next_car)
+			print('mask:', mask)
+			print('next_car',next_car[0])
+			print('next_node',next_node[0])
 			# print('next_node[0]', next_node[0])
 			# print('next_car[0]', next_car[0])
 			tours.append(next_node)
@@ -95,7 +98,7 @@ class DecoderCell(nn.Module):
 		_idx  = torch.stack(idxs, 1)
 		_log_p = torch.stack(log_ps, 1)
 		ll = self.env.get_log_likelihood(_log_p, _idx)
-		
+		print(self.env.pi)
 		if return_pi:
 			return cost, ll, self.env.pi
 		return cost, ll
@@ -107,30 +110,33 @@ if __name__ == '__main__':
 	# batch, n_car, n_depot, n_customer, n_node = 2, 10, 1, 20, 21
 	# batch, n_car, n_depot, n_customer, n_node = 1, 5, 1, 10, 11
 	# batch, n_car, n_depot, n_customer, n_node = 2, 5, 3, 10, 13
-	batch, n_car_each_depot, n_depot, n_customer, n_node, capa = 2, 5, 2, 100, 102, 2.
+	batch, n_car_each_depot, n_depot, n_customer, n_node, capa = 1, 2, 3, 20, 23, 2.
 	assert n_node == n_depot + n_customer
 	embed_dim = 128
 
 	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 	# device = torch.device('cpu')
+	from dataset import generate_data
 	data = generate_data(device, batch = batch, n_car_each_depot = n_car_each_depot, n_depot = n_depot, n_customer = n_customer, capa = capa)
-
-	
+	from encoder import GraphAttentionEncoder
+	encoder = GraphAttentionEncoder(n_layers = 3)
+	node_embeddings, graph_embedding = encoder(data)
 	decoder = DecoderCell(embed_dim, n_heads = 8, clip = 10.)
-	node_embeddings = torch.rand((batch, n_node, embed_dim), dtype = torch.float, device = device)
-	graph_embedding = node_embeddings.mean(dim = 1)
 	encoder_output = (node_embeddings, graph_embedding)
 	# a = graph_embedding[:,None,:].expand(batch, 7, embed_dim)
 	# a = graph_embedding[:,None,:].repeat(1, 7, 1)
-	
+	print(node_embeddings.size(), graph_embedding.size())
+	output = decoder(data, encoder_output, return_pi = True, decode_type = 'sampling')
+
 	# decoder.train()
+	"""
 	return_pi = True
 	output = decoder(data, encoder_output, return_pi = return_pi, decode_type = 'greedy')
 	if return_pi:
-		"""cost: (batch)
-			ll: (batch)
-			pi: (batch, n_car, decode_step)
-		"""
+		###cost: (batch)
+		#	ll: (batch)
+		#	pi: (batch, n_car, decode_step)
+		
 		cost, ll, pi = output
 		print('\ncost: ', cost.size(), cost)
 		print('\nll: ', ll.size(), ll)
@@ -145,7 +151,7 @@ if __name__ == '__main__':
 		print(k, v.size(), torch.numel(v))
 		cnt += torch.numel(v)
 	print(cnt)
-
+	"""
 	# ll.mean().backward()
 	# print(decoder.Wk1.weight.grad)
-	# https://discuss.pytorch.org/t/model-param-grad-is-none-how-to-debug/52634	
+	# https://discuss.pytorch.org/t/model-param-grad-is-none-how-to-debug/52634
