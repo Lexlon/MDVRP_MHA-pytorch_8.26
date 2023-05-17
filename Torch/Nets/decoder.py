@@ -7,8 +7,8 @@ import torch.nn as nn
 # sys.path.append('../')
 # from dataset import generate_data
 
-from decoder_layers import MultiHeadAttention, DotProductAttention
-from decoder_utils import TopKSampler, CategoricalSampler, Env
+from .decoder_layers import MultiHeadAttention, DotProductAttention
+from .decoder_utils import TopKSampler, CategoricalSampler, Env
 
 
 class DecoderCell(nn.Module):
@@ -57,7 +57,7 @@ class DecoderCell(nn.Module):
 		self.env = Env(x, node_embeddings)
 		self.compute_static(node_embeddings, graph_embedding)
 		mask, step_context = self.env._get_step_t1()
-		print('mask',mask)
+		#print('mask',mask)
 		selecter = {'greedy': TopKSampler(), 'sampling': CategoricalSampler()}.get(decode_type, None)
 		log_ps, tours, cars, idxs = [[] for _ in range(4)]
 		for i in range(self.env.n_node * 10):
@@ -67,9 +67,9 @@ class DecoderCell(nn.Module):
 			next_car = idx // self.env.n_node
 			next_node = idx % self.env.n_node
 			mask, step_context = self.env._get_step(next_node, next_car)
-			print('mask:', mask)
-			print('next_car',next_car[0])
-			print('next_node',next_node[0])
+			#print('mask:', mask)
+			#print('next_car',next_car[0])
+			#print('next_node',next_node[0])
 			# print('next_node[0]', next_node[0])
 			# print('next_car[0]', next_car[0])
 			tours.append(next_node)
@@ -98,7 +98,7 @@ class DecoderCell(nn.Module):
 		_idx  = torch.stack(idxs, 1)
 		_log_p = torch.stack(log_ps, 1)
 		ll = self.env.get_log_likelihood(_log_p, _idx)
-		print(self.env.pi)
+		#print(self.env.pi)
 		if return_pi:
 			return cost, ll, self.env.pi
 		return cost, ll

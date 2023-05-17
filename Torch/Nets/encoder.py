@@ -8,7 +8,7 @@ import math
 # sys.path.append('../')
 # from dataset import generate_data
 
-from encoder_layers import MultiHeadAttention
+from .encoder_layers import MultiHeadAttention
 
 class Normalization(nn.Module):
 
@@ -109,7 +109,7 @@ class GraphAttentionEncoder(nn.Module):
 				=((batch, n_nodes, embed_dim), (batch, embed_dim))
 		"""
 		embed_depot = self.init_W_depot(x['depot_xy'])
-		embed_customer = self.init_W(torch.cat([x['customer_xy'], x['demand'][:,:,None]], dim = -1))
+		embed_customer = self.init_W(torch.cat([x['customer_xy'], x['demand_level'][:,:,None]], dim = -1))
 		z = torch.cat([embed_depot, embed_customer], dim = 1)
 	
 		for layer in self.encoder_layers:

@@ -7,7 +7,7 @@ def arg_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--seed', metavar = 'SE', type = int, default = 123, help = 'random seed number for inference(or validation during training), reproducibility')
 	# main config
-	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 20, help = 'number of customer nodes, time sequence')
+	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 50, help = 'number of customer nodes, time sequence')
 	parser.add_argument('-c', '--n_car_each_depot', metavar = 'C', type = int, default = 3, help = 'number of available vehicles per depot')
 	parser.add_argument('-D', '--capa', metavar = 'CA', type = float, default = 1., help = 'initial capacity of vehicles')
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 3, help = 'number of depot nodes')
@@ -74,7 +74,7 @@ def load_pkl(pkl_path, verbose = True):
 def train_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p', '--path', metavar = 'P', type = str, 
-						default = 'Pkl/VRP20.pkl',
+						default = 'Pkl/VRP50.pkl',
 						help = 'Pkl/VRP***.pkl, pkl file only, default: Pkl/VRP20.pkl')
 	args = parser.parse_args()
 	return args

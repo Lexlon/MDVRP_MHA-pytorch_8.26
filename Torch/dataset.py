@@ -11,21 +11,23 @@ import json
 CAPACITIES = {5: 10., 10: 20., 20: 30., 50: 40., 100: 50., 120: 50.}
 max_demand = 9
 
-def generate_data(device, batch = 10, n_car_each_depot = 15, n_depot = 1, n_customer = 20, capa = 1., seed = None):
+def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 1., seed = None):
 	if seed is not None:
 		torch.manual_seed(seed)
 	n_node = n_depot + n_customer
 	n_car = n_car_each_depot * n_depot
 	# assert (9. / CAPACITIES[n_customer]) * n_customer <= capa * n_car, 'infeasible; Customer Demand should be smaller than Vechile Capacity' 
-	assert (max_demand / CAPACITIES[n_customer]) * n_customer <= capa * n_car, 'infeasible; Customer Demand should be smaller than Vechile Capacity' 
-	return {'depot_xy': torch.rand((batch, n_depot, 2), device = device)
-			,'customer_xy': torch.rand((batch, n_customer, 2), device = device)
+	#assert (max_demand / CAPACITIES[n_customer]) * n_customer <= capa * n_car, 'infeasible; Customer Demand should be smaller than Vechile Capacity'
+	return {'depot_xy': 100*torch.rand((batch, n_depot, 2), device = device)
+			,'customer_xy': 100*torch.rand((batch, n_customer, 2), device = device)
 			# ,'demand': torch.randint(low = 1, high = 10, size = (batch, n_customer), device = device) / CAPACITIES[n_customer]
-			,'demand': torch.randint(low = 1, high = max_demand+1, size = (batch, n_customer), device = device) / CAPACITIES[n_customer]
+			,'demand': torch.ones(size = (batch, n_customer),dtype=torch.float32, device = device)
 			# ,'car_start_node': torch.randint(low = 0, high = n_depot, size = (batch, n_car), device = device)
 			,'car_start_node': torch.arange(n_depot, device = device)[None,:].repeat(batch, n_car_each_depot)
-			# ,'car_capacity': torch.ones((batch, n_car), device = device)
-			,'car_capacity': capa * torch.ones((batch, n_car), device = device)
+			 #,'car_capacity': torch.ones((batch, n_car), device = device)
+			,'car_capacity': 30 * torch.ones((batch, n_car), device = device)
+			,'car_level' : torch.arange(n_car_each_depot, device = device)[None,:].repeat(batch, n_depot)
+			,'demand_level':torch.randint(low = 0, high = n_car_each_depot, size = (batch, n_customer), device = device)
 			}
 
 class Generator(Dataset):
@@ -33,7 +35,7 @@ class Generator(Dataset):
 		 https://github.com/wouterkool/attention-learn-to-route/blob/master/problems/vrp/problem_vrp.py
 		 https://github.com/nperlmut31/Vehicle-Routing-Problem/blob/master/dataloader.py
 	"""
-	def __init__(self, device, n_samples = 5120, n_car_each_depot = 1, n_depot = 1, n_customer = 20, capa = 1., seed = None):
+	def __init__(self, device, n_samples = 5120, n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 1., seed = None):
 		if seed is not None:
 			self.data = generate_data(device, n_samples, n_car_each_depot, n_depot, n_customer, capa, seed)
 		self.data = generate_data(device, n_samples, n_car_each_depot, n_depot, n_customer, capa, seed)
@@ -43,6 +45,7 @@ class Generator(Dataset):
 		for k, v in self.data.items():
 			# e.g., dic['depot_xy'] = self.data['depot_xy'][idx]
 			dic[k] = v[idx]
+		#print(dic)
 		return dic
 
 	def __len__(self):
@@ -52,10 +55,11 @@ class Generator(Dataset):
 if __name__ == '__main__':
 	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')	
 	batch, batch_steps, n_customer = 128, 10, 20
-	dataset = Generator(device, n_samples = batch*batch_steps, 
-		n_car_each_depot = 15, n_depot = 1, n_customer = n_customer, capa = 2.)
+	dataset = Generator(device, n_samples = 3,
+		n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 2.)
 	data = next(iter(dataset))	
-	
+	print(data)
+
 	# generate_data(device, batch = 10, n_car = 15, n_depot = 2, n_customer = 20, seed = )
 	# data = {}
 	# seed = 123

@@ -26,6 +26,8 @@ class Env():
 		self.demand = x['demand']
 		self.xy = torch.cat([x['depot_xy'], x['customer_xy']], 1)
 		self.car_start_node, self.D = x['car_start_node'], x['car_capacity']
+		self.car_level = x['car_level']
+		self.demand_level = x['demand_level']
 		self.car_cur_node = self.car_start_node
 		self.pi = self.car_start_node.unsqueeze(-1)
 
@@ -34,7 +36,7 @@ class Env():
 		self.n_car = self.car_start_node.size(1)
 		self.batch, self.n_node, self.embed_dim = node_embeddings.size()
 		self.node_embeddings = node_embeddings[:,None,:,:].repeat(1,self.n_car,1,1)
-		
+		self.mask_level = self.build_level_mask()
 		self.demand_include_depot = torch.cat([torch.zeros((self.batch, self.n_depot), dtype = torch.float, device = self.device), self.demand], dim = 1)
 		assert self.demand_include_depot.size(1) == self.n_node, 'demand_include_depot'
 		
@@ -56,6 +58,22 @@ class Env():
 		b = self.car_start_node[:,:,None].repeat(1, 1, self.n_depot)
 		depot_one_hot = (a==b).bool()#.long()
 		return depot_one_hot, torch.logical_not(depot_one_hot)
+
+	def build_level_mask(self):
+		'''
+            a_level = a[:, :, 1][:,:,None]#将a的等级维度扩展为n_node
+            a_level = tf.tile(a_level[:,:,None,:], (1, 1, 4, 1))
+            b_level = b[:, :, 1][:, :, None]
+            b_level = tf.tile(b_level[:, None, :, :], (1, 3, 1, 1))
+            '''
+		car_level = self.car_level
+		car_level = car_level[:, :, None].repeat(1, 1, self.n_customer)
+		##print("car",car_level)
+		demand_level = self.demand_level
+		demand_level = demand_level[:, None, :].repeat(1, self.n_car, 1)
+		# tf.greater_equal(car_level, demand_level)
+		##print(tf.greater_equal(car_level, demand_level))
+		return car_level < demand_level
 
 	def get_mask(self, next_node, next_car):
 		"""self.demand **excludes depot**: (batch, n_nodes-1)
@@ -92,7 +110,7 @@ class Env():
 		D_over_customer = self.demand[:,None,:].repeat(1,self.n_car,1) > self.D[:,:,None].repeat(1,1,self.n_customer)
 		mask_customer = D_over_customer | self.traversed_customer[:,None,:].repeat(1,self.n_car,1)
 		# mask_customer: (batch, n_car, n_customer)
-
+		mask_customer = mask_customer | self.mask_level
 		mask_depot = is_next_depot & ((mask_customer == False).long().sum(dim = 2).sum(dim = 1)[:,None].repeat(1,self.n_car) > 0)
 		# mask_depot: (batch, n_car)
 		"""mask_depot = True --> We cannot choose depot in the next step 
@@ -154,7 +172,7 @@ class Env():
 			--> return mask: (batch, n_car, n_node ,1)
 		"""
 		mask_depot_t1 = self.mask_depot | self.mask_depot_unused
-		mask_customer_t1 = self.traversed_customer[:,None,:].repeat(1,self.n_car,1)
+		mask_customer_t1 = self.traversed_customer[:,None,:].repeat(1,self.n_car,1) |self.mask_level
 		return torch.cat([mask_depot_t1, mask_customer_t1], dim = -1).unsqueeze(-1)
 		
 	def update_node_path(self, next_node, next_car):
