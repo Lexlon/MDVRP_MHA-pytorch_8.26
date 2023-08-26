@@ -38,7 +38,7 @@ class Env():
 		self.node_embeddings = node_embeddings[:,None,:,:].repeat(1,self.n_car,1,1)
 		self.mask_level = self.build_level_mask()
 		self.demand_include_depot = torch.cat([torch.zeros((self.batch, self.n_depot), dtype = torch.float, device = self.device), self.demand], dim = 1)
-		assert self.demand_include_depot.size(1) == self.n_node, 'demand_include_depot'
+		#assert self.demand_include_depot.size(1) == self.n_node, 'demand_include_depot'
 		
 		# self.demand = demand[:,None,:].repeat(1,self.n_car,1)		
 		self.car_run = torch.zeros((self.batch, self.n_car), dtype = torch.float, device = self.device)
@@ -141,7 +141,7 @@ class Env():
 		"""
 		each_car_idx = self.car_cur_node[:,:,None,None].repeat(1,1,1,self.embed_dim)		
 		prev_embeddings = torch.gather(input = self.node_embeddings, dim = 2, index = each_car_idx)
-		step_context = torch.cat([prev_embeddings, self.D[:,:,None,None]], dim = -1)
+		step_context = torch.cat([prev_embeddings, self.car_level[:,:,None,None]], dim = -1)
 		return step_context
 
 	def _get_step(self, next_node, next_car):
@@ -205,7 +205,7 @@ class Env():
 			_idx: (batch, decode_step, 1), selected index
 		"""
 		log_p = torch.gather(input = _log_p, dim = 2, index = _idx)
-		return log_p.squeeze(-1).sum(dim = 1)
+		return log_p.squeeze(-1).mean(dim = 1)
 
 class Sampler(nn.Module):
 	"""args; logits: (batch, n_car * n_nodes)

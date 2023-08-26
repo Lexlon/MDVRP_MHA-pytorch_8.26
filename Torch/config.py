@@ -5,21 +5,21 @@ from datetime import datetime
 
 def arg_parser():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--seed', metavar = 'SE', type = int, default = 123, help = 'random seed number for inference(or validation during training), reproducibility')
+	parser.add_argument('--seed', metavar = 'SE', type = int, default = 1, help = 'random seed number for inference(or validation during training), reproducibility')
 	# main config
-	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 50, help = 'number of customer nodes, time sequence')
+	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 60, help = 'number of customer nodes, time sequence')
 	parser.add_argument('-c', '--n_car_each_depot', metavar = 'C', type = int, default = 3, help = 'number of available vehicles per depot')
 	parser.add_argument('-D', '--capa', metavar = 'CA', type = float, default = 1., help = 'initial capacity of vehicles')
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 3, help = 'number of depot nodes')
 
 	# batch config
-	parser.add_argument('-b', '--batch', metavar = 'B', type = int, default = 512, help = 'batch size')
-	parser.add_argument('-s', '--batch_steps', metavar = 'S', type = int, default = 2500, help = 'number of samples = batch * batch_steps')
-	parser.add_argument('-v', '--batch_verbose', metavar = 'V', type = int, default = 10, help = 'print and logging during training process')
-	parser.add_argument('-e', '--epochs', metavar = 'E', type = int, default = 100, help = 'total number of samples = epochs * number of samples')
+	parser.add_argument('-b', '--batch', metavar = 'B', type = int, default = 64, help = 'batch size')
+	parser.add_argument('-s', '--batch_steps', metavar = 'S', type = int, default = 500, help = 'number of samples = batch * batch_steps')
+	parser.add_argument('-v', '--batch_verbose', metavar = 'V', type = int, default = 20, help = 'print and logging during training process')
+	parser.add_argument('-e', '--epochs', metavar = 'E', type = int, default = 20, help = 'total number of samples = epochs * number of samples')
 
-	parser.add_argument('-nr', '--n_rollout_samples', metavar = 'NR', type = int, default = 10000, help = 'baseline rollout number of samples')
-	parser.add_argument('-nv', '--n_val_samples', metavar = 'NV', type = int, default = 10000, help = 'validation number of samples during training')
+	parser.add_argument('-nr', '--n_rollout_samples', metavar = 'NR', type = int, default = 1000, help = 'baseline rollout number of samples')
+	parser.add_argument('-nv', '--n_val_samples', metavar = 'NV', type = int, default = 1000, help = 'validation number of samples during training')
 	parser.add_argument('-em', '--embed_dim', metavar = 'EM', type = int, default = 128, help = 'embedding size')
 	parser.add_argument('-nh', '--n_heads', metavar = 'NH', type = int, default = 8, help = 'number of heads in MHA')
 	parser.add_argument('-th', '--tanh_clipping', metavar = 'TH', type = float, default = 10., help = 'improve exploration; clipping logits')
@@ -74,22 +74,22 @@ def load_pkl(pkl_path, verbose = True):
 def train_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p', '--path', metavar = 'P', type = str, 
-						default = 'Pkl/VRP50.pkl',
+						default = 'Pkl/VRP60.pkl',
 						help = 'Pkl/VRP***.pkl, pkl file only, default: Pkl/VRP20.pkl')
 	args = parser.parse_args()
 	return args
 
 def test_parser():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-dt', '--decode_type', metavar = 'DT', type = str, default = 'sampling', choices = ['greedy', 'sampling'], help = 'greedy or sampling')
+	parser.add_argument('-dt', '--decode_type', metavar = 'DT', type = str, default = 'greedy', choices = ['greedy', 'sampling'], help = 'greedy or sampling')
 	parser.add_argument('-b', '--batch', metavar = 'B', type = int, default = 2, help = 'batch size')
-	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 20, help = 'number of customer nodes, time sequence')
-	parser.add_argument('-c', '--n_car', metavar = 'C', type = int, default = 10, help = 'number of available vehicles')
+	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 60, help = 'number of customer nodes, time sequence')
+	parser.add_argument('-c', '--n_car', metavar = 'C', type = int, default = 9, help = 'number of available vehicles')
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 2, help = 'number of depot nodes')
-	parser.add_argument('-s', '--seed', metavar = 'S', type = int, default = 123, help = 'random seed number for inference, reproducibility')
+	parser.add_argument('-s', '--seed', metavar = 'S', type = int, default = 1, help = 'random seed number for inference, reproducibility')
 	parser.add_argument('-p', '--path', metavar = 'P', type = str, default = 'Weights/VRP100_epoch15.pt', #required = True,
 						help = 'Weights/VRP***_epoch***.pt, pt file required')
-	parser.add_argument('-t', '--txt', metavar = 'T', type = str, default = 'data/n100d3c3D2s1.json', help = 'if you wanna test out on text file, example: data/***.json')
+	parser.add_argument('-t', '--txt', metavar = 'T', type = str, default = 'data/n100d3c3D1s1234.json', help = 'if you wanna test out on text file, example: data/***.json')
 	parser.add_argument('-wc', '--write_csv', metavar = 'WC', type = str, help = 'export csv example: Csv/***_mha.csv')
 	parser.add_argument('-wc2', '--write_csv_2opt', metavar = 'WC2', type = str, help = 'export csv example: Csv/***_mha2opt.csv')
 	args = parser.parse_args()

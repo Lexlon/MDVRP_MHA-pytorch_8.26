@@ -44,38 +44,24 @@ class GAtxt():
 
 
 if __name__ == '__main__':
-	device = torch.device('cpu')# torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')	
-	assert len(sys.argv) >= 2, 'len(sys.argv) should be >= 2'
-	print(sys.argv)
-	n_depot = int(sys.argv[1])# 3
-	n_car_each_depot = int(sys.argv[2])# 5
-	n_customer = int(sys.argv[3])# 100
-	seed = int(sys.argv[4])# 0
-	capa = float(sys.argv[5])# 2.
+	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+	#assert len(sys.argv) >= 2, 'len(sys.argv) should be >= 2'
+	#print(sys.argv)
+	n_depot = 3# 3
+	n_car_each_depot = 3# 5
+	n_customer = 100# 100
+	seed = 1234# 0
+	capa = 1# 2.
 	
 	data = generate_data(device, batch = 1, n_car_each_depot = n_car_each_depot, n_depot = n_depot, n_customer = n_customer, capa = capa, seed = seed)
 	
 	basename = f'n{n_customer}d{n_depot}c{n_car_each_depot}D{int(capa)}s{seed}.json'
 	dirname1 = 'Torch/data/'
-	dirname2 = 'Ortools/data/'
-	dirname3 = 'GA/data/'
-	for x in [dirname1, dirname2, dirname3]:
-		os.makedirs(x, exist_ok = True)
-
 	json_path_torch = dirname1 + basename
-	json_path_ortools = dirname2 + basename
-	txt_path_ga = dirname3 + basename.split('.')[0] + '.txt'
-	for x in [json_path_torch, json_path_ortools, txt_path_ga]:
-		print(f'generate {x} ...')
+
+	print(f'generate {json_path_torch} ...')
 
 	
 	hoge1 = TorchJson(json_path_torch)
 	hoge1.dump_json(data)
 	data = hoge1.load_json(device)
-	
-	hoge2 = GAtxt(txt_path_ga)
-	hoge2.write_txt(data)
-
-	hoge3 = OrtoolsJson(json_path_ortools)
-	hoge3.dump_json(data)
-	data = hoge3.load_json()

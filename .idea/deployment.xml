@@ -2,6 +2,14 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
+      <paths name="root@connect.neimeng.seetacloud.com:21872 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/autodl-tmp/project" local="$PROJECT_DIR$" />
+            <mapping />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="root@region-42.seetacloud.com:44441 password">
         <serverdata>
           <mappings>

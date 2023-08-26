@@ -18,14 +18,14 @@ def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_custo
 	n_car = n_car_each_depot * n_depot
 	# assert (9. / CAPACITIES[n_customer]) * n_customer <= capa * n_car, 'infeasible; Customer Demand should be smaller than Vechile Capacity' 
 	#assert (max_demand / CAPACITIES[n_customer]) * n_customer <= capa * n_car, 'infeasible; Customer Demand should be smaller than Vechile Capacity'
-	return {'depot_xy': 100*torch.rand((batch, n_depot, 2), device = device)
-			,'customer_xy': 100*torch.rand((batch, n_customer, 2), device = device)
+	return {'depot_xy': 10*torch.rand((batch, n_depot, 2), device = device)
+			,'customer_xy': 10*torch.rand((batch, n_customer, 2), device = device)
 			# ,'demand': torch.randint(low = 1, high = 10, size = (batch, n_customer), device = device) / CAPACITIES[n_customer]
 			,'demand': torch.ones(size = (batch, n_customer),dtype=torch.float32, device = device)
 			# ,'car_start_node': torch.randint(low = 0, high = n_depot, size = (batch, n_car), device = device)
 			,'car_start_node': torch.arange(n_depot, device = device)[None,:].repeat(batch, n_car_each_depot)
 			 #,'car_capacity': torch.ones((batch, n_car), device = device)
-			,'car_capacity': 30 * torch.ones((batch, n_car), device = device)
+			,'car_capacity': 9 * torch.ones((batch, n_car), device = device)
 			,'car_level' : torch.arange(n_car_each_depot, device = device)[None,:].repeat(batch, n_depot)
 			,'demand_level':torch.randint(low = 0, high = n_car_each_depot, size = (batch, n_customer), device = device)
 			}
@@ -53,13 +53,19 @@ class Generator(Dataset):
 
 	
 if __name__ == '__main__':
-	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')	
+	import torch
+
+	print(torch.__version__)
+	print(torch.cuda.is_available())
+	'''
+	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+	print(device)
 	batch, batch_steps, n_customer = 128, 10, 20
 	dataset = Generator(device, n_samples = 3,
 		n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 2.)
 	data = next(iter(dataset))	
 	print(data)
-
+'''
 	# generate_data(device, batch = 10, n_car = 15, n_depot = 2, n_customer = 20, seed = )
 	# data = {}
 	# seed = 123

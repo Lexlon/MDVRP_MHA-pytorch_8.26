@@ -186,6 +186,7 @@ if __name__ == '__main__':
 	args = test_parser()
 	t1 = time()
 	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+	print(args.path)
 	pretrained = load_model(device, args.path, embed_dim = 128, n_encode_layers = 3)
 	print(f'model loading time:{time()-t1}s')
 	
@@ -196,26 +197,27 @@ if __name__ == '__main__':
 		for k, v in data.items():
 			shape = (args.batch, ) + v.size()[1:] 
 			data[k] = v.expand(*shape).clone()
-			# print('k, v', k, *v.size())
-			# print(*shape)
-		
+			print('k, v', k, *v.size())
+			print(*shape)
+	'''
 	else:
 		data = {}
 		for k in ['depot_xy', 'customer_xy', 'demand', 'car_start_node', 'car_capacity']:
 			elem = [generate_data(device, batch = 1, n_car = args.n_car, n_depot = args.n_depot, n_customer = args.n_customer, seed = args.seed)[k].squeeze(0) for j in range(args.batch)]
 			data[k] = torch.stack(elem, 0)
-	
+	'''
 	# for k, v in data.items():
 	# 	print('k, v', k, v.size())
 	# 	print(v.type())# dtype of tensor
-	
+
 	print(f'data generate time:{time()-t1}s')
 	pretrained = pretrained.to(device)
 	# data = list(map(lambda x: x.to(device), data))
 	pretrained.eval()
 	with torch.no_grad():
 		costs, _, pis = pretrained(data, return_pi = True, decode_type = args.decode_type)
-	# print('costs:', costs)
+
+	print('pis:', pis)
 	idx_in_batch = torch.argmin(costs, dim = 0)
 	cost = costs[idx_in_batch].cpu().numpy()
 	if args.write_csv is not None:

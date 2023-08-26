@@ -60,9 +60,13 @@ class DecoderCell(nn.Module):
 		#print('mask',mask)
 		selecter = {'greedy': TopKSampler(), 'sampling': CategoricalSampler()}.get(decode_type, None)
 		log_ps, tours, cars, idxs = [[] for _ in range(4)]
-		for i in range(self.env.n_node * 10):
+		for i in range(self.env.n_node * 2):
 			logits = self.compute_dynamic(mask, step_context)
-			log_p = torch.log_softmax(logits, dim = -1)	
+			log_p = torch.log_softmax(logits, dim=-1)
+			#if i ==4:
+				#print('log_p',log_p)
+				#print('logits', torch.softmax(logits, dim=-1))
+
 			idx = selecter(log_p)
 			next_car = idx // self.env.n_node
 			next_node = idx % self.env.n_node
@@ -79,11 +83,14 @@ class DecoderCell(nn.Module):
 			if self.env.traversed_customer.all():
 				break
 
-		assert self.env.traversed_customer.all(), f"not traversed all customer {self.env.traversed_customer} {self.env.D}"
+		#assert self.env.traversed_customer.all(), f"not traversed all customer {self.env.traversed_customer} {self.env.D}"
 		# print('self.env.car_start_node:', self.env.car_start_node)
 		self.env.return_depot_all_car()
 		# print(self.env.car_run[0])
-		cost = self.env.car_run.sum(1)
+		#cost = tf.reduce_sum(self.env.car_run, 1) + 5000 * tf.cast(
+			#tf.logical_not(tf.reduce_all(self.env.traversed_customer, -1)), tf.float32)
+		#print(self.env.traversed_customer.all(-1))
+		cost = self.env.car_run.sum(1) + 500 * (~self.env.traversed_customer.all(-1)).float()
 		# print('self.env.pi.size():', self.env.pi.size())
 		
 		"""
