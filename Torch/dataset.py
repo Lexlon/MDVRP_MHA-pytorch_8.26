@@ -25,7 +25,7 @@ def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_custo
 			# ,'car_start_node': torch.randint(low = 0, high = n_depot, size = (batch, n_car), device = device)
 			,'car_start_node': torch.arange(n_depot, device = device)[None,:].repeat(batch, n_car_each_depot)
 			 #,'car_capacity': torch.ones((batch, n_car), device = device)
-			,'car_capacity': 9 * torch.ones((batch, n_car), device = device)
+			,'car_capacity': 12 * torch.ones((batch, n_car), device = device)
 			,'car_level' : torch.arange(n_car_each_depot, device = device)[None,:].repeat(batch, n_depot)
 			,'demand_level':torch.randint(low = 0, high = n_car_each_depot, size = (batch, n_customer), device = device)
 			}

@@ -11,6 +11,7 @@ from config import Config, load_pkl, train_parser
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 def train(cfg):
 	torch.backends.cudnn.benchmark = True
@@ -48,7 +49,13 @@ def train(cfg):
 		df_test = pd.DataFrame(data={'epochs': list(range(epochs_num)),
 									 'val_сost': val_cost})
 
+		data = {'epochs': list(range(epochs_num)),
+				'loss': train_loss_results,
+				'cost': train_cost_results,
+				'val_cost': val_cost}
 
+		df = pd.DataFrame(data)
+		df.to_csv('learning_scale_{}.csv'.format(cfg.n_customer), index=False)
 		if plots:
 			plt.figure(figsize=(15, 9))
 			ax = sns.lineplot(x='epochs', y='loss', data=df_train, color='salmon', label='train loss')
@@ -56,10 +63,16 @@ def train(cfg):
 			sns.lineplot(x='epochs', y='cost', data=df_train, color='cornflowerblue', label='train cost', ax=ax2)
 			sns.lineplot(x='epochs', y='val_сost', data=df_test, palette='darkblue', label='val cost').set(
 				ylabel='cost')
-			ax.legend(loc=(0.75, 0.90), ncol=1)
-			ax2.legend(loc=(0.75, 0.95), ncol=2)
+			ax.legend(loc=(0.75, 0.90), ncol=1, fontsize=16)
+			ax2.legend(loc=(0.75, 0.95), ncol=2, fontsize=16)
 			ax.grid(axis='x')
 			ax2.grid(True)
+			# 设置坐标轴标签字号
+			ax.set_xlabel('Epochs', fontsize=18)
+			ax.set_ylabel('Train Loss', fontsize=18)
+			ax2.set_ylabel('Val Cost', fontsize=18)
+			plt.xticks(fontsize=14)  # 设置刻度字号为12
+			plt.yticks(fontsize=14)  # 设置刻度字号为12
 			plt.savefig('learning_curve_plot_{}.jpg'.format(filename))
 			plt.show()
 	
@@ -108,7 +121,7 @@ def train(cfg):
 		train_cost_results.append(avg_L_1)
 		baseline.epoch_callback(model, epoch, 3*cfg.batch)
 		val_L = baseline.validate(model, validation_dataset, 3*cfg.batch)
-		val_cost_avg.append(val_L)
+		val_cost_avg.append(np.round(val_L.detach().cpu().numpy()))
 		if cfg.islogger:
 			with open(val_path, 'a') as f:
 				f.write('%d,%1.4f\n'%(epoch, val_L))
@@ -122,7 +135,7 @@ def train(cfg):
 		else:
 			cnt += 1
 			print(f'cnt: {cnt}/10')
-			if(cnt >= 10):
+			if(cnt >= 20):
 				print('early stop, average val cost cant decrease anymore')
 				break
 				
@@ -133,6 +146,9 @@ def train(cfg):
 				with open(param_path, 'w') as f:
 					f.write(''.join('%s,%s\n'%item for item in vars(cfg).items()))
 	filename_for_results = 'n_{}, d_{}'.format(cfg.n_customer, cfg.n_depot)
+	print(train_loss_results)
+	print(train_cost_results)
+	print(val_cost_avg)
 	get_results(train_loss_results,
 				train_cost_results,
 				val_cost_avg,
