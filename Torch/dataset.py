@@ -8,7 +8,7 @@ import json
 
 # CAPACITIES = {10: 20., 20: 30., 50: 40., 100: 50.}
 # CAPACITIES = {5: 10., 10: 20., 20: 30., 50: 40., 100: 50.}
-CAPACITIES = {5: 10., 10: 20., 20: 30., 50: 40., 100: 50., 120: 50.}
+CAPACITIES = {20: 4, 50: 9, 100: 15, 120: 18}
 max_demand = 9
 
 def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 1., seed = None):
@@ -25,7 +25,7 @@ def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_custo
 			# ,'car_start_node': torch.randint(low = 0, high = n_depot, size = (batch, n_car), device = device)
 			,'car_start_node': torch.arange(n_depot, device = device)[None,:].repeat(batch, n_car_each_depot)
 			 #,'car_capacity': torch.ones((batch, n_car), device = device)
-			,'car_capacity': 12 * torch.ones((batch, n_car), device = device)
+			,'car_capacity': CAPACITIES[n_customer] * torch.ones((batch, n_car), device = device)
 			,'car_level' : torch.arange(n_car_each_depot, device = device)[None,:].repeat(batch, n_depot)
 			,'demand_level':torch.randint(low = 0, high = n_car_each_depot, size = (batch, n_customer), device = device)
 			}

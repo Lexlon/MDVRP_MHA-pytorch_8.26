@@ -7,7 +7,7 @@ def arg_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--seed', metavar = 'SE', type = int, default = 1, help = 'random seed number for inference(or validation during training), reproducibility')
 	# main config
-	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 80, help = 'number of customer nodes, time sequence')
+	parser.add_argument('-n', '--n_customer', metavar = 'N', type = int, default = 50, help = 'number of customer nodes, time sequence')
 	parser.add_argument('-c', '--n_car_each_depot', metavar = 'C', type = int, default = 3, help = 'number of available vehicles per depot')
 	parser.add_argument('-D', '--capa', metavar = 'CA', type = float, default = 1., help = 'initial capacity of vehicles')
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 3, help = 'number of depot nodes')
