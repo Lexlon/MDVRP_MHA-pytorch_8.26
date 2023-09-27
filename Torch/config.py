@@ -13,7 +13,7 @@ def arg_parser():
 	parser.add_argument('-d', '--n_depot', metavar = 'D', type = int, default = 3, help = 'number of depot nodes')
 
 	# batch config
-	parser.add_argument('-b', '--batch', metavar = 'B', type = int, default = 64, help = 'batch size')
+	parser.add_argument('-b', '--batch', metavar = 'B', type = int, default = 32, help = 'batch size')
 	parser.add_argument('-s', '--batch_steps', metavar = 'S', type = int, default = 100, help = 'number of samples = batch * batch_steps')
 	parser.add_argument('-v', '--batch_verbose', metavar = 'V', type = int, default = 20, help = 'print and logging during training process')
 	parser.add_argument('-e', '--epochs', metavar = 'E', type = int, default = 30, help = 'total number of samples = epochs * number of samples')
@@ -74,7 +74,7 @@ def load_pkl(pkl_path, verbose = True):
 def train_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p', '--path', metavar = 'P', type = str, 
-						default = 'Pkl/VRP80.pkl',
+						default = 'Pkl/VRP50.pkl',
 						help = 'Pkl/VRP***.pkl, pkl file only, default: Pkl/VRP20.pkl')
 	args = parser.parse_args()
 	return args
