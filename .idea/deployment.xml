@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="ubuntu@111.230.247.34" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
     <serverData>
-      <paths name="lxl">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="root@connect.neimeng.seetacloud.com:59900 password">
+      <paths name="root@region-42.seetacloud.com:44441 password">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="root@region-3.seetacloud.com:42781 password">
+      <paths name="root@region-42.seetacloud.com:44441 password (2)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ubuntu@111.230.247.34:22 password">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/bitstudent" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ubuntu@111.230.247.34:22 password (2)">
+      <paths name="root@region-46.seetacloud.com:40640 password">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="ubuntu@111.230.247.34">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/lxl/Transformer-comparation-lamtop" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

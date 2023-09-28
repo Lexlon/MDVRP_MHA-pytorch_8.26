@@ -49,13 +49,13 @@ if __name__ == '__main__':
 	#print(sys.argv)
 	n_depot = 3# 3
 	n_car_each_depot = 3# 5
-	n_customer = 100# 100
-	seed = 1234# 0
+	n_customer = 20# 100
+	seed = 123# 0
 	capa = 1# 2.
 	
 	data = generate_data(device, batch = 1, n_car_each_depot = n_car_each_depot, n_depot = n_depot, n_customer = n_customer, capa = capa, seed = seed)
 	
-	basename = f'n{n_customer}d{n_depot}c{n_car_each_depot}D{int(capa)}s{seed}.json'
+	basename = f'n{n_customer}d{n_depot}c{n_car_each_depot}s{seed}.json'
 	dirname1 = 'Torch/data/'
 	json_path_torch = dirname1 + basename
 

@@ -55,7 +55,7 @@ def train(cfg):
 				'val_cost': val_cost}
 
 		df = pd.DataFrame(data)
-		df.to_csv('learning_scale_{}.csv'.format(cfg.n_customer), index=False)
+		df.to_csv('learning_scale_{},11.csv'.format(cfg.n_customer), index=False)
 		if plots:
 			plt.figure(figsize=(15, 9))
 			ax = sns.lineplot(x='epochs', y='loss', data=df_train, color='salmon', label='train loss')
@@ -90,7 +90,7 @@ def train(cfg):
 		dataloader = DataLoader(dataset, batch_size = cfg.batch, shuffle = True, drop_last = True)
 		avg_loss_1 = 0
 		avg_L_1 = 0
-		for t, inputs in enumerate(dataloader):	
+		for t, inputs in enumerate(tqdm(dataloader, disable=False)):
 			loss, L_mean = rein_loss(model, inputs, bs, t, device)
 			optimizer.zero_grad()
 			loss.backward()
@@ -145,7 +145,7 @@ def train(cfg):
 				print(f'generate {param_path}')
 				with open(param_path, 'w') as f:
 					f.write(''.join('%s,%s\n'%item for item in vars(cfg).items()))
-	filename_for_results = 'n_{}, d_{}'.format(cfg.n_customer, cfg.n_depot)
+	filename_for_results = 'n_{}, d_{},11'.format(cfg.n_customer, cfg.n_depot)
 	print(train_loss_results)
 	print(train_cost_results)
 	print(val_cost_avg)

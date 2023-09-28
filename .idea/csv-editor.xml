@@ -3,6 +3,20 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="&lt;cb6ee1ef-2cd2-409d-9007-62a8bb589007&gt;\tmp\lxl\Transformer-comparation-lamtop\Torch\learning_scale_20,3.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="&lt;cb6ee1ef-2cd2-409d-9007-62a8bb589007&gt;\tmp\lxl\Transformer-comparation-lamtop\Torch\learning_scale_20.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Csv\n100d3c3D2_to_2opt.csv">
           <value>
             <Attribute>
@@ -73,7 +87,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Torch\learning_scale_20,3.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Torch\learning_scale_20.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Torch\learning_scale_50.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

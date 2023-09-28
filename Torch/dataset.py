@@ -8,7 +8,7 @@ import json
 
 # CAPACITIES = {10: 20., 20: 30., 50: 40., 100: 50.}
 # CAPACITIES = {5: 10., 10: 20., 20: 30., 50: 40., 100: 50.}
-CAPACITIES = {20: 4, 50: 9, 100: 15, 120: 18}
+CAPACITIES = {20: 3, 50: 7, 80: 11, 100: 15, 120: 18}
 max_demand = 9
 
 def generate_data(device, batch = 10, n_car_each_depot = 3, n_depot = 3, n_customer = 50, capa = 1., seed = None):
